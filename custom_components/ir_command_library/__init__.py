@@ -34,6 +34,8 @@ from .const import (
 from .coordinator import IRCommandCoordinator
 from .models import IRCommand
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
 LEARN_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_CONTROLLER): cv.entity_id,

@@ -5,9 +5,15 @@ on:
   pull_request:
   schedule:
     - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions: {}
 
 jobs:
   hacs:
+    # HACS only consumes public repository data. This job automatically starts
+    # validating if the backup is made public for distribution later.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -19,14 +19,20 @@ Home Assistant's standard `remote.learn_command`, `remote.send_command`, and
   command names, network addresses, and payloads.
 - The integration makes no cloud connection and contains no analytics.
 
-## Installation from a private/custom HACS repository
+## Restoring from this private backup
 
-1. In HACS, open **Integrations**.
-2. Add this GitHub repository as a custom repository with category
-   **Integration**.
-3. Install **IR Command Library** and restart Home Assistant.
+HACS cannot install private GitHub repositories. To restore this private backup:
+
+1. Download or clone the repository.
+2. Copy `custom_components/ir_command_library` into Home Assistant's
+   `/config/custom_components/` directory.
+3. Restart Home Assistant.
 4. Go to **Settings > Devices & services > Add integration** and select
    **IR Command Library**.
+
+If the repository is made public later, it can be added to HACS as a custom
+repository with category **Integration**. The HACS validation job is configured
+to start automatically whenever the repository is public.
 
 For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:

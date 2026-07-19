@@ -4,6 +4,7 @@
   "after_dependencies": ["broadlink"],
   "codeowners": ["@mmoud"],
   "config_flow": true,
+  "dependencies": ["http"],
   "documentation": "https://github.com/mmoud/ha-ir-command-library#readme",
   "integration_type": "helper",
   "iot_class": "calculated",
