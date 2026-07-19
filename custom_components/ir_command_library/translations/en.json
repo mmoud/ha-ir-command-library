@@ -1,0 +1,46 @@
+{
+  "title": "IR Command Library",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up IR Command Library",
+        "description": "Create a private local catalog that exposes learned remote commands as button entities. Learned IR/RF payloads remain in the remote integration's storage."
+      }
+    },
+    "abort": {
+      "already_configured": "IR Command Library is already configured."
+    }
+  },
+  "services": {
+    "learn_command": {
+      "name": "Learn command",
+      "description": "Learn an IR or RF command and add it to the library.",
+      "fields": {
+        "controller": {"name": "Controller", "description": "Remote entity that will learn the command."},
+        "area": {"name": "Area", "description": "Area used to organize the generated device."},
+        "device": {"name": "Device", "description": "Storage name for the controlled appliance."},
+        "command": {"name": "Command", "description": "Name of the command to learn."},
+        "command_type": {"name": "Command type", "description": "Learn an IR or RF command."},
+        "alternative": {"name": "Alternative code", "description": "Learn both toggle-bit alternatives."},
+        "timeout": {"name": "Timeout", "description": "Maximum learning time in seconds."}
+      }
+    },
+    "register_command": {
+      "name": "Register existing command",
+      "description": "Add an already learned command to the library without transmitting or relearning it.",
+      "fields": {
+        "controller": {"name": "Controller", "description": "Remote entity that stores the command."},
+        "area": {"name": "Area", "description": "Area used to organize the generated device."},
+        "device": {"name": "Device", "description": "Existing remote device storage name."},
+        "command": {"name": "Command", "description": "Existing remote command storage name."}
+      }
+    },
+    "remove_command": {
+      "name": "Remove command",
+      "description": "Delete a learned command from its remote and remove its generated button.",
+      "fields": {
+        "command_button": {"name": "Command button", "description": "Generated command button to remove."}
+      }
+    }
+  }
+}

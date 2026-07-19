@@ -1,0 +1,12 @@
+{
+  "domain": "ir_command_library",
+  "name": "IR Command Library",
+  "after_dependencies": ["broadlink"],
+  "codeowners": ["@mmoud"],
+  "config_flow": true,
+  "documentation": "https://github.com/mmoud/ha-ir-command-library#readme",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/mmoud/ha-ir-command-library/issues",
+  "version": "0.1.0"
+}

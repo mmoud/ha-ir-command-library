@@ -1,0 +1,66 @@
+learn_command:
+  fields:
+    controller:
+      required: true
+      selector:
+        entity:
+          domain: remote
+    area:
+      required: true
+      selector:
+        text:
+    device:
+      required: true
+      selector:
+        text:
+    command:
+      required: true
+      selector:
+        text:
+    command_type:
+      default: ir
+      selector:
+        select:
+          options:
+            - ir
+            - rf
+    alternative:
+      default: false
+      selector:
+        boolean:
+    timeout:
+      default: 30
+      selector:
+        number:
+          min: 5
+          max: 120
+          mode: box
+
+register_command:
+  fields:
+    controller:
+      required: true
+      selector:
+        entity:
+          domain: remote
+    area:
+      required: true
+      selector:
+        text:
+    device:
+      required: true
+      selector:
+        text:
+    command:
+      required: true
+      selector:
+        text:
+
+remove_command:
+  fields:
+    command_button:
+      required: true
+      selector:
+        entity:
+          domain: button
+          integration: ir_command_library

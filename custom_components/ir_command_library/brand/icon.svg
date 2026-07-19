@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="IR Command Library">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="52" x2="432" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17263d"/>
+      <stop offset="1" stop-color="#070b14"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="153" y1="140" x2="373" y2="367" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#78eaff"/>
+      <stop offset="1" stop-color="#5f79ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="20" y="20" width="472" height="472" rx="116" fill="url(#bg)"/>
+  <rect x="21" y="21" width="470" height="470" rx="115" fill="none" stroke="#8eeeff" stroke-opacity=".22" stroke-width="2"/>
+  <path d="M191 137h130c35 0 63 28 63 63v112c0 35-28 63-63 63H191c-35 0-63-28-63-63V200c0-35 28-63 63-63Z" fill="#0c1423" stroke="url(#accent)" stroke-width="12"/>
+  <circle cx="256" cy="248" r="55" fill="#12243a" stroke="url(#accent)" stroke-width="12"/>
+  <circle cx="256" cy="248" r="16" fill="#78eaff"/>
+  <path d="M205 101c29-24 73-24 102 0M180 69c44-37 108-37 152 0" fill="none" stroke="#78eaff" stroke-linecap="round" stroke-width="13"/>
+  <circle cx="190" cy="326" r="13" fill="#78eaff"/>
+  <circle cx="226" cy="326" r="13" fill="#657fff"/>
+  <path d="M285 326h51" stroke="#78eaff" stroke-linecap="round" stroke-width="13"/>
+</svg>
