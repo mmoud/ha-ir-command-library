@@ -72,3 +72,15 @@ import_legacy_catalog:
       selector:
         entity:
           domain: todo
+
+repair_controller:
+  fields:
+    from_controller:
+      required: true
+      selector:
+        text:
+    to_controller:
+      required: true
+      selector:
+        entity:
+          domain: remote

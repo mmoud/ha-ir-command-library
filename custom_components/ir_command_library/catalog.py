@@ -51,6 +51,26 @@ class IRCommandCatalog:
             await self._async_save()
             return True
 
+    async def async_replace_controller(self, old: str, new: str) -> int:
+        """Replace a controller reference without touching learned payloads."""
+        async with self._lock:
+            repaired = 0
+            commands: dict[str, IRCommand] = {}
+            for command in self._commands.values():
+                if command.controller == old:
+                    command = IRCommand.create(
+                        controller=new,
+                        area=command.area,
+                        device=command.device,
+                        command=command.command,
+                    )
+                    repaired += 1
+                commands[command.key] = command
+            if repaired:
+                self._commands = commands
+                await self._async_save()
+            return repaired
+
     async def _async_save(self) -> None:
         await self._store.async_save(
             {"commands": [item.as_dict() for item in self._commands.values()]}

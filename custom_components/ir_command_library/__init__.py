@@ -23,12 +23,15 @@ from .const import (
     CONF_COMMAND_TYPE,
     CONF_CONTROLLER,
     CONF_DEVICE,
+    CONF_FROM_CONTROLLER,
     CONF_TIMEOUT,
     CONF_TODO_ENTITY,
+    CONF_TO_CONTROLLER,
     DOMAIN,
     PLATFORMS,
     SERVICE_IMPORT_LEGACY_CATALOG,
     SERVICE_LEARN_COMMAND,
+    SERVICE_REPAIR_CONTROLLER,
     SERVICE_REGISTER_COMMAND,
     SERVICE_REMOVE_COMMAND,
     STATIC_PATH,
@@ -68,6 +71,13 @@ REMOVE_SCHEMA = vol.Schema(
 
 IMPORT_LEGACY_SCHEMA = vol.Schema(
     {vol.Required(CONF_TODO_ENTITY): cv.entity_id}
+)
+
+REPAIR_CONTROLLER_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_FROM_CONTROLLER): vol.All(cv.string, vol.Length(min=1, max=255)),
+        vol.Required(CONF_TO_CONTROLLER): cv.entity_id,
+    }
 )
 
 
@@ -180,6 +190,17 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         }
         return result if call.return_response else None
 
+    async def handle_repair_controller(call: ServiceCall) -> dict[str, int] | None:
+        """Repair legacy controller labels in catalog metadata only."""
+        runtime = _runtime(hass)
+        repaired = await runtime.catalog.async_replace_controller(
+            call.data[CONF_FROM_CONTROLLER].strip(),
+            call.data[CONF_TO_CONTROLLER],
+        )
+        runtime.coordinator.async_publish()
+        result = {"repaired": repaired, "catalog_total": len(runtime.catalog.commands)}
+        return result if call.return_response else None
+
     hass.services.async_register(
         DOMAIN, SERVICE_LEARN_COMMAND, handle_learn, schema=LEARN_SCHEMA
     )
@@ -194,6 +215,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         SERVICE_IMPORT_LEGACY_CATALOG,
         handle_import_legacy_catalog,
         schema=IMPORT_LEGACY_SCHEMA,
+        supports_response=SupportsResponse.OPTIONAL,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_REPAIR_CONTROLLER,
+        handle_repair_controller,
+        schema=REPAIR_CONTROLLER_SCHEMA,
         supports_response=SupportsResponse.OPTIONAL,
     )
     return True
