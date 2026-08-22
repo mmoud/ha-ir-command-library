@@ -24,6 +24,6 @@ CONF_TODO_ENTITY: Final = "todo_entity"
 
 STORAGE_KEY: Final = f"{DOMAIN}.catalog"
 STORAGE_VERSION: Final = 1
-VERSION: Final = "1.0.6"
+VERSION: Final = "1.0.7"
 STATIC_PATH: Final = f"/api/{DOMAIN}/ir-command-library-card.js"
 STATIC_URL: Final = f"{STATIC_PATH}?v={VERSION}"

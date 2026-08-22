@@ -96,12 +96,14 @@ class IRCommandButton(CoordinatorEntity[IRCommandCoordinator], ButtonEntity):
 
     @property
     def available(self) -> bool:
-        controller = self.hass.states.get(self._command.controller)
-        return (
-            self._command.key in self.coordinator.data
-            and controller is not None
-            and controller.state not in {"unavailable", "unknown"}
-        )
+        """Keep catalog buttons available even while their controller is offline.
+
+        Home Assistant suppresses extra state attributes for unavailable entities.
+        The command metadata is what lets the dashboard group and show learned
+        buttons, and it remains valid independently of the controller's current
+        connection state.
+        """
+        return self._command.key in self.coordinator.data
 
     async def async_press(self) -> None:
         await self.hass.services.async_call(
