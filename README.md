@@ -1,7 +1,7 @@
 # IR Command Library
 
 <p align="center">
-  <img src="custom_components/ir_command_library/brand/logo.png" alt="IR Command Library" width="480">
+  <img src="https://raw.githubusercontent.com/mmoud/ha-ir-command-library/main/custom_components/ir_command_library/brand/logo.png" alt="IR Command Library" width="480">
 </p>
 
 A Home Assistant custom integration that turns learned IR and RF commands into
@@ -46,7 +46,7 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.14
+/api/ir_command_library/ir-command-library-card.js?v=1.0.15
 ```
 
 The version query string avoids a stale browser cache. Update it when you
