@@ -42,7 +42,7 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.11
+/api/ir_command_library/ir-command-library-card.js?v=1.0.12
 ```
 
 The version query string avoids a stale browser cache. Update it when you
@@ -64,6 +64,10 @@ type: custom:ir-command-manager-card
 
 The cards automatically discover generated command buttons and compatible
 remote entities; no entity IDs are hard-coded in card YAML.
+
+The controller picker shows only remotes that advertise Home Assistant's
+command-learning capability. Media and virtual remotes, such as a HomePod,
+are not shown.
 
 ## Learning a command
 

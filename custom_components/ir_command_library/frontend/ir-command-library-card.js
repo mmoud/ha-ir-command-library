@@ -160,7 +160,13 @@ class IRCommandManagerCard extends HTMLElement {
   }
 
   _remotes() {
-    return Object.values(this._hass?.states || {}).filter((state) => state.entity_id.startsWith("remote.")).sort((a, b) => this._name(a).localeCompare(this._name(b)));
+    // Home Assistant uses this feature bit to indicate that a remote can learn
+    // commands. A remote-domain entity can also represent a media device or a
+    // virtual remote, neither of which belongs in this IR/RF controller picker.
+    const LEARN_COMMAND = 1;
+    return Object.values(this._hass?.states || {})
+      .filter((state) => state.entity_id.startsWith("remote.") && (Number(state.attributes.supported_features || 0) & LEARN_COMMAND))
+      .sort((a, b) => this._name(a).localeCompare(this._name(b)));
   }
 
   _buttons() {
