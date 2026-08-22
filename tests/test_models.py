@@ -56,6 +56,16 @@ class IRCommandModelTests(unittest.TestCase):
             set(command.as_dict()), {"controller", "area", "device", "command"}
         )
 
+    def test_legacy_catalog_summary_is_parsed_safely(self) -> None:
+        command = IRCommand.from_legacy_summary(
+            "remote.living_room | Living Room | television | volume_up"
+        )
+        self.assertIsNotNone(command)
+        self.assertEqual(command.controller, "remote.living_room")
+        self.assertEqual(command.device, "television")
+        self.assertEqual(command.command, "volume_up")
+        self.assertIsNone(IRCommand.from_legacy_summary("not a catalog item"))
+
 
 if __name__ == "__main__":
     unittest.main()

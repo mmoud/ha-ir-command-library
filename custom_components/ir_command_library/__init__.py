@@ -10,7 +10,7 @@ import voluptuous as vol
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 
@@ -24,8 +24,10 @@ from .const import (
     CONF_CONTROLLER,
     CONF_DEVICE,
     CONF_TIMEOUT,
+    CONF_TODO_ENTITY,
     DOMAIN,
     PLATFORMS,
+    SERVICE_IMPORT_LEGACY_CATALOG,
     SERVICE_LEARN_COMMAND,
     SERVICE_REGISTER_COMMAND,
     SERVICE_REMOVE_COMMAND,
@@ -62,6 +64,10 @@ REGISTER_SCHEMA = vol.Schema(
 
 REMOVE_SCHEMA = vol.Schema(
     {vol.Required(CONF_COMMAND_BUTTON): cv.entity_id}
+)
+
+IMPORT_LEGACY_SCHEMA = vol.Schema(
+    {vol.Required(CONF_TODO_ENTITY): cv.entity_id}
 )
 
 
@@ -137,6 +143,43 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         await runtime.catalog.async_remove(command.key)
         runtime.coordinator.async_publish()
 
+    async def handle_import_legacy_catalog(call: ServiceCall) -> dict[str, int] | None:
+        """Import catalog metadata from the original To-do-list prototype."""
+        runtime = _runtime(hass)
+        todo_entity = call.data[CONF_TODO_ENTITY]
+        if not todo_entity.startswith("todo."):
+            raise ServiceValidationError("Select a To-do list entity")
+
+        response = await hass.services.async_call(
+            "todo",
+            "get_items",
+            {"status": ["needs_action", "completed"]},
+            target={CONF_ENTITY_ID: todo_entity},
+            blocking=True,
+            return_response=True,
+            context=call.context,
+        )
+        list_data = response.get(todo_entity, {}) if isinstance(response, dict) else {}
+        items = list_data.get("items", []) if isinstance(list_data, dict) else []
+        imported = 0
+        skipped = 0
+        for item in items:
+            summary = item.get("summary") if isinstance(item, dict) else None
+            command = IRCommand.from_legacy_summary(summary)
+            if command is None:
+                skipped += 1
+                continue
+            imported += await runtime.catalog.async_add(command)
+
+        runtime.coordinator.async_publish()
+        result = {
+            "imported": imported,
+            "already_present": max(len(items) - skipped - imported, 0),
+            "skipped": skipped,
+            "catalog_total": len(runtime.catalog.commands),
+        }
+        return result if call.return_response else None
+
     hass.services.async_register(
         DOMAIN, SERVICE_LEARN_COMMAND, handle_learn, schema=LEARN_SCHEMA
     )
@@ -145,6 +188,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     )
     hass.services.async_register(
         DOMAIN, SERVICE_REMOVE_COMMAND, handle_remove, schema=REMOVE_SCHEMA
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_IMPORT_LEGACY_CATALOG,
+        handle_import_legacy_catalog,
+        schema=IMPORT_LEGACY_SCHEMA,
+        supports_response=SupportsResponse.OPTIONAL,
     )
     return True
 

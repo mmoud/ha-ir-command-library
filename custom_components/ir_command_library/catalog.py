@@ -35,11 +35,13 @@ class IRCommandCatalog:
                 commands[command.key] = command
         self._commands = commands
 
-    async def async_add(self, command: IRCommand) -> None:
-        """Add or replace a command record."""
+    async def async_add(self, command: IRCommand) -> bool:
+        """Add or replace a command record and return whether it was new."""
         async with self._lock:
+            added = command.key not in self._commands
             self._commands[command.key] = command
             await self._async_save()
+            return added
 
     async def async_remove(self, key: str) -> bool:
         """Remove a command record and report whether it existed."""

@@ -42,7 +42,7 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.0
+/api/ir_command_library/ir-command-library-card.js?v=1.0.1
 ```
 
 ## Dashboard cards
@@ -98,10 +98,24 @@ allows future learned commands to appear automatically.
 
 ## Migration from the prototype To-do catalog
 
-This integration intentionally does not read arbitrary To-do items. Existing
-BroadLink commands remain stored by Home Assistant. Use **Register existing
-command** once for each old catalog item; no IR/RF payload needs to be copied or
-exposed.
+This integration intentionally does not read arbitrary To-do items during normal
+operation. If you used the original `codex_ir_commands` prototype, keep it and
+its To-do list installed during migration:
+
+1. Install this integration, restart Home Assistant, and add **IR Command
+   Library** from **Settings > Devices & services**.
+2. In Developer Tools, run **IR Command Library: Import legacy To-do catalog**
+   and select the original `todo.*` entity (normally the IR Command Library
+   catalog).
+3. The action copies only valid `controller | area | device | command` metadata
+   into this integration's private catalog. It does not transmit, relearn,
+   modify, or delete any command.
+4. Test the generated buttons. Once the command count and operation are
+   confirmed, remove the old prototype and its dashboard resources if desired.
+
+The import is idempotent: it is safe to run again, and existing commands are
+not duplicated. Existing BroadLink commands remain stored by Home Assistant; no
+IR/RF payload needs to be copied or exposed.
 
 ## Public-release and privacy checklist
 

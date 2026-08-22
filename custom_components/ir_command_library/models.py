@@ -8,6 +8,12 @@ import re
 from typing import Any
 
 
+LEGACY_CATALOG_PATTERN = re.compile(
+    r"^(?P<controller>.+?)\s*\|\s*(?P<area>[^|]+?)\s*\|\s*"
+    r"(?P<device>[^|]+?)\s*\|\s*(?P<command>.+)$"
+)
+
+
 @dataclass(frozen=True, slots=True)
 class IRCommand:
     """A named command stored by a Home Assistant remote entity."""
@@ -50,6 +56,17 @@ class IRCommand:
                 command=value["command"],
             )
         except (KeyError, TypeError, ValueError):
+            return None
+
+    @classmethod
+    def from_legacy_summary(cls, value: object) -> IRCommand | None:
+        """Parse one catalog record from the original To-do-list prototype."""
+        match = LEGACY_CATALOG_PATTERN.match(str(value or "").strip())
+        if match is None:
+            return None
+        try:
+            return cls.create(**match.groupdict())
+        except (TypeError, ValueError):
             return None
 
     @classmethod

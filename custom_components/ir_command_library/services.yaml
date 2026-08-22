@@ -64,3 +64,11 @@ remove_command:
         entity:
           domain: button
           integration: ir_command_library
+
+import_legacy_catalog:
+  fields:
+    todo_entity:
+      required: true
+      selector:
+        entity:
+          domain: todo

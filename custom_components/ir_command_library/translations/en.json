@@ -41,6 +41,13 @@
       "fields": {
         "command_button": {"name": "Command button", "description": "Generated command button to remove."}
       }
+    },
+    "import_legacy_catalog": {
+      "name": "Import legacy To-do catalog",
+      "description": "Copy valid command metadata from the original IR Command Library To-do list. This does not delete the old list or any learned remote codes.",
+      "fields": {
+        "todo_entity": {"name": "Legacy To-do list", "description": "The original To-do entity containing command catalog items."}
+      }
     }
   }
 }
