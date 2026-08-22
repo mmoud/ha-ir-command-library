@@ -71,6 +71,17 @@ class IRCommandButton(CoordinatorEntity[IRCommandCoordinator], ButtonEntity):
         self._attr_unique_id = f"command_{command.key}"
         self._attr_name = command.command_name
         self._attr_icon = command_icon(command.command)
+        # Home Assistant caches entity properties. Supplying these through the
+        # documented ``_attr_`` backing attribute makes them available to the
+        # state machine and dashboard cards on current HA releases.
+        self._attr_extra_state_attributes = {
+            "ir_area": command.area,
+            "ir_controller": command.controller,
+            "ir_device": command.device,
+            "ir_device_name": command.device_name,
+            "ir_command": command.command,
+            "ir_command_name": command.command_name,
+        }
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, f"{command.controller}|{command.area}|{command.device}")},
             name=command.device_name,
@@ -91,17 +102,6 @@ class IRCommandButton(CoordinatorEntity[IRCommandCoordinator], ButtonEntity):
             and controller is not None
             and controller.state not in {"unavailable", "unknown"}
         )
-
-    @property
-    def extra_state_attributes(self) -> dict[str, str]:
-        return {
-            "ir_area": self._command.area,
-            "ir_controller": self._command.controller,
-            "ir_device": self._command.device,
-            "ir_device_name": self._command.device_name,
-            "ir_command": self._command.command,
-            "ir_command_name": self._command.command_name,
-        }
 
     async def async_press(self) -> None:
         await self.hass.services.async_call(
