@@ -25,7 +25,10 @@ async def async_setup_entry(
     entities: dict[str, IRCommandButton] = {}
 
     def sync_entities() -> None:
-        current = set(coordinator.data)
+        # A coordinator can briefly have no published data while Home Assistant
+        # is starting.  Treat that as an empty catalog; a later publish will
+        # add the saved commands through the registered listener.
+        current = set(coordinator.data or {})
         known = set(entities)
 
         new_entities = [

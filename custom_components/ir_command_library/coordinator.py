@@ -20,6 +20,10 @@ class IRCommandCoordinator(DataUpdateCoordinator[dict[str, IRCommand]]):
     def __init__(self, hass: HomeAssistant, catalog: IRCommandCatalog) -> None:
         super().__init__(hass, _LOGGER, name=DOMAIN)
         self.catalog = catalog
+        # Button-platform setup consumes ``coordinator.data`` immediately.  Seed
+        # it from storage so commands are restored on Home Assistant startup,
+        # before any service call publishes a catalog change.
+        self.async_set_updated_data(catalog.commands)
 
     async def _async_update_data(self) -> dict[str, IRCommand]:
         return self.catalog.commands
