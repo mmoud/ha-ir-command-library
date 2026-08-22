@@ -2,8 +2,10 @@
 
 from typing import Final
 
+from homeassistant.const import Platform
+
 DOMAIN: Final = "ir_command_library"
-PLATFORMS: Final = ["button"]
+PLATFORMS: Final = [Platform.BUTTON]
 
 SERVICE_LEARN_COMMAND: Final = "learn_command"
 SERVICE_REGISTER_COMMAND: Final = "register_command"
@@ -22,6 +24,6 @@ CONF_TODO_ENTITY: Final = "todo_entity"
 
 STORAGE_KEY: Final = f"{DOMAIN}.catalog"
 STORAGE_VERSION: Final = 1
-VERSION: Final = "1.0.4"
+VERSION: Final = "1.0.5"
 STATIC_PATH: Final = f"/api/{DOMAIN}/ir-command-library-card.js"
 STATIC_URL: Final = f"{STATIC_PATH}?v={VERSION}"
