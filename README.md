@@ -1,18 +1,18 @@
 # IR Command Library
 
-A privacy-first Home Assistant custom integration that turns learned IR and RF
-commands into normal `button` entities. The buttons work in dashboards, GUI
-automations, scripts, Assist, and HomeKit Bridge.
+A Home Assistant custom integration that turns learned IR and RF commands into
+standard `button` entities. Use them from dashboards, automations, scripts,
+Assist, and HomeKit Bridge.
 
 The integration supports multiple compatible `remote.*` controllers. BroadLink
-is the primary tested use case, but the catalog is controller-agnostic and uses
+is the primary tested use case. The catalog is controller-agnostic and uses
 Home Assistant's standard `remote.learn_command`, `remote.send_command`, and
-`remote.delete_command` actions.
+`remote.delete_command` actions, so it can work with other compatible remotes.
 
 ## Privacy model
 
-- The library stores only controller entity IDs, area names, appliance names,
-  and command names in Home Assistant's private integration storage.
+- The library stores controller entity IDs, area names, appliance names, and
+  command names in Home Assistant's private integration storage.
 - Learned IR/RF payloads remain owned by the remote integration and are never
   copied into this library, diagnostics, dashboard resources, or this repository.
 - Diagnostics contain counts only. They omit entity IDs, areas, device names,
@@ -42,8 +42,11 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.10
+/api/ir_command_library/ir-command-library-card.js?v=1.0.11
 ```
+
+The version query string avoids a stale browser cache. Update it when you
+install a later release.
 
 ## Dashboard cards
 
@@ -59,48 +62,50 @@ Learning and management:
 type: custom:ir-command-manager-card
 ```
 
-The cards contain no fixed entity IDs. They discover generated command buttons
-and compatible remote entities from the current Home Assistant instance.
+The cards automatically discover generated command buttons and compatible
+remote entities; no entity IDs are hard-coded in card YAML.
 
 ## Learning a command
 
-The manager card is the easiest path. You can also use the GUI-editable
-**IR Command Library: Learn command** action from Developer Tools, scripts, or
-automations. Supply:
+The manager card is the easiest path. You can also use **IR Command Library:
+Learn command** from **Developer Tools > Actions**, scripts, or automations.
+Provide:
 
 - a `remote.*` controller;
 - the Home Assistant area used for organization;
-- a storage-safe appliance name, such as `television`;
+- an appliance name, such as `television`;
 - a descriptive command name, such as `power` or `volume_up`.
 
 After learning succeeds, the matching button appears automatically.
 
 ## Registering existing commands
 
-If a compatible remote integration already stores a command, use
-**Register existing command** with the exact controller, device, and command
-names. Registration does not transmit or relearn anything.
+If a compatible remote integration already stores a command, use **IR Command
+Library: Register existing command** with the exact controller, device, and
+command names. Registration neither sends nor relearns the command.
 
 ## Removing commands
 
-Use **Remove command** and select a generated button. The integration first asks
-the remote integration to delete the learned command. It removes the catalog
-entry only after that action succeeds.
+Use **IR Command Library: Remove command** and select a generated button. The
+integration deletes the learned command from the remote first, then removes its
+catalog entry only if that succeeds.
 
 ## Automations and HomeKit
 
-Generated commands are standard Home Assistant button entities. In a GUI
-automation, add the **Press button** action and choose a command.
+Generated commands are standard Home Assistant button entities. In an
+automation or script, use the built-in **Press button** action (`button.press`)
+and select the command. There is intentionally no separate send-command action
+for each saved IR command.
 
 HomeKit Bridge represents Home Assistant buttons as switches. Include the
 `button` domain in the bridge. Leaving that domain without a fixed entity filter
 allows future learned commands to appear automatically.
 
-## Migration from the prototype To-do catalog
+## Migrating from the original prototype
 
-This integration intentionally does not read arbitrary To-do items during normal
-operation. If you used the original `codex_ir_commands` prototype, keep it and
-its To-do list installed during migration:
+This integration does not read arbitrary To-do items during normal operation.
+If you used the original `codex_ir_commands` prototype, keep it and its To-do
+list installed during migration:
 
 1. Install this integration, restart Home Assistant, and add **IR Command
    Library** from **Settings > Devices & services**.
@@ -112,18 +117,23 @@ its To-do list installed during migration:
    `controller | device | command` records are grouped under an `Imported`
    area. It does not transmit, relearn, modify, or delete any command.
 4. Test the generated buttons. Once the command count and operation are
-   confirmed, remove the old prototype and its dashboard resources if desired.
+   confirmed, remove the old prototype and its dashboard resources.
 
 The import is idempotent: it is safe to run again, and existing commands are
-not duplicated. Existing BroadLink commands remain stored by Home Assistant; no
-IR/RF payload needs to be copied or exposed.
+not duplicated. Existing BroadLink commands remain stored by Home Assistant;
+no IR/RF payload needs to be copied or exposed.
 
-## Public-release and privacy checklist
+If an early migration left duplicate devices in the **Imported** area, run
+**IR Command Library: Clean up legacy orphaned devices**. It removes only the
+old orphaned device records and refuses to remove a record that still has
+entities. It does not send, relearn, or delete IR/RF payloads.
 
-This repository is designed to be public. Before a release, run the checks below
-from a clean checkout. The privacy check scans the working tree and every
-reachable Git blob for common Home Assistant secrets and personal-network
-artifacts.
+## Contributing and releases
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Before a
+release, run the checks below from a clean checkout. The privacy check scans the
+working tree and reachable Git history for common Home Assistant secrets and
+personal-network artifacts.
 
 ```bash
 python3 scripts/privacy_check.py
@@ -132,13 +142,10 @@ python3 -m unittest discover -s tests -v
 node --check custom_components/ir_command_library/frontend/ir-command-library-card.js
 ```
 
-Also verify the GitHub repository has a public description, issues enabled,
-private vulnerability reporting enabled, and a release created from the version
-in `manifest.json`. Do not upload Home Assistant backups, `.storage` folders,
-learned-code files, diagnostics archives, screenshots of private dashboards, or
-any learned IR/RF payloads.
+Do not upload Home Assistant backups, `.storage` folders, learned-code files,
+diagnostics archives, private-dashboard screenshots, or learned IR/RF payloads.
 
 ## Support status
 
-Test command learning and deletion on a non-critical appliance before relying
-on it broadly.
+Test learning and deletion on a non-critical appliance before relying on it for
+daily use.

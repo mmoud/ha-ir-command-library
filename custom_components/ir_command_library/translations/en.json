@@ -48,6 +48,14 @@
       "fields": {
         "todo_entity": {"name": "Legacy To-do list", "description": "The original To-do entity containing command catalog items."}
       }
+    },
+    "repair_legacy_controller_labels": {
+      "name": "Repair legacy controller labels",
+      "description": "Restore remote entity IDs and room names that were stored in the original prototype's display label. Learned IR/RF payloads are not read or changed."
+    },
+    "cleanup_legacy_orphaned_devices": {
+      "name": "Clean up legacy orphaned devices",
+      "description": "Remove old Imported device records created before controller labels were repaired. A record with entities is left untouched."
     }
   }
 }
