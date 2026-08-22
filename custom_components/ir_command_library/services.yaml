@@ -78,3 +78,9 @@ repair_legacy_controller_labels:
     Repair controller labels imported from the original prototype. This restores
     the remote entity ID and the room name without reading or changing learned
     IR/RF payloads.
+
+cleanup_legacy_orphaned_devices:
+  description: >-
+    Remove orphaned device records created before legacy controller labels were
+    repaired. It removes only records with the old controller-and-Imported
+    identifier and never removes a device that still has entities.

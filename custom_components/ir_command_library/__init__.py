@@ -13,6 +13,8 @@ from homeassistant.const import CONF_ENTITY_ID
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 
 from .catalog import IRCommandCatalog
 from .const import (
@@ -28,6 +30,7 @@ from .const import (
     DOMAIN,
     PLATFORMS,
     SERVICE_IMPORT_LEGACY_CATALOG,
+    SERVICE_CLEANUP_LEGACY_ORPHANED_DEVICES,
     SERVICE_LEARN_COMMAND,
     SERVICE_REPAIR_LEGACY_CONTROLLER_LABELS,
     SERVICE_REGISTER_COMMAND,
@@ -191,6 +194,37 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         result = {"repaired": repaired, "catalog_total": len(runtime.catalog.commands)}
         return result if call.return_response else None
 
+    async def handle_cleanup_legacy_orphaned_devices(
+        call: ServiceCall,
+    ) -> dict[str, int] | None:
+        """Remove only orphaned device records made by the legacy label bug."""
+        runtime = _runtime(hass)
+        entity_registry = er.async_get(hass)
+        device_registry = dr.async_get(hass)
+        legacy_identifiers = {
+            (
+                DOMAIN,
+                f"{command.controller} [{command.area}]|Imported|{command.device}",
+            )
+            for command in runtime.catalog.commands.values()
+        }
+        removed = 0
+        skipped_with_entities = 0
+        for device in list(device_registry.devices.values()):
+            if not (device.identifiers & legacy_identifiers):
+                continue
+            if any(entry.device_id == device.id for entry in entity_registry.entities.values()):
+                skipped_with_entities += 1
+                continue
+            device_registry.async_remove_device(device.id)
+            removed += 1
+
+        result = {
+            "removed": removed,
+            "skipped_with_entities": skipped_with_entities,
+        }
+        return result if call.return_response else None
+
     hass.services.async_register(
         DOMAIN, SERVICE_LEARN_COMMAND, handle_learn, schema=LEARN_SCHEMA
     )
@@ -205,6 +239,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         SERVICE_IMPORT_LEGACY_CATALOG,
         handle_import_legacy_catalog,
         schema=IMPORT_LEGACY_SCHEMA,
+        supports_response=SupportsResponse.OPTIONAL,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_CLEANUP_LEGACY_ORPHANED_DEVICES,
+        handle_cleanup_legacy_orphaned_devices,
+        schema=vol.Schema({}),
         supports_response=SupportsResponse.OPTIONAL,
     )
     hass.services.async_register(

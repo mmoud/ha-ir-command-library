@@ -42,7 +42,7 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.2
+/api/ir_command_library/ir-command-library-card.js?v=1.0.10
 ```
 
 ## Dashboard cards
