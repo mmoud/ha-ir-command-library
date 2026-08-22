@@ -210,6 +210,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     hass.data[DOMAIN]["runtime"] = runtime
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    # The button platform registers its catalog listener while it is forwarded.
+    # Publish after that point so commands restored from storage are added even
+    # when this config entry starts with a non-empty catalog.
+    coordinator.async_publish()
     return True
 
 
