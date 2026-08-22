@@ -12,6 +12,11 @@ LEGACY_CATALOG_PATTERN = re.compile(
     r"^(?P<controller>.+?)\s*\|\s*(?P<area>[^|]+?)\s*\|\s*"
     r"(?P<device>[^|]+?)\s*\|\s*(?P<command>.+)$"
 )
+LEGACY_THREE_PART_CATALOG_PATTERN = re.compile(
+    r"^(?P<controller>.+?)\s*\|\s*(?P<device>[^|]+?)\s*\|\s*"
+    r"(?P<command>.+)$"
+)
+LEGACY_DEFAULT_AREA = "Imported"
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,12 +65,19 @@ class IRCommand:
 
     @classmethod
     def from_legacy_summary(cls, value: object) -> IRCommand | None:
-        """Parse one catalog record from the original To-do-list prototype."""
-        match = LEGACY_CATALOG_PATTERN.match(str(value or "").strip())
-        if match is None:
-            return None
+        """Parse a three- or four-part record from a legacy To-do list."""
+        summary = str(value or "").strip()
+        match = LEGACY_CATALOG_PATTERN.match(summary)
+        values: dict[str, str]
+        if match is not None:
+            values = match.groupdict()
+        else:
+            match = LEGACY_THREE_PART_CATALOG_PATTERN.match(summary)
+            if match is None:
+                return None
+            values = {**match.groupdict(), "area": LEGACY_DEFAULT_AREA}
         try:
-            return cls.create(**match.groupdict())
+            return cls.create(**values)
         except (TypeError, ValueError):
             return None
 

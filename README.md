@@ -42,7 +42,7 @@ For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=1.0.1
+/api/ir_command_library/ir-command-library-card.js?v=1.0.2
 ```
 
 ## Dashboard cards
@@ -108,8 +108,9 @@ its To-do list installed during migration:
    and select the original `todo.*` entity (normally the IR Command Library
    catalog).
 3. The action copies only valid `controller | area | device | command` metadata
-   into this integration's private catalog. It does not transmit, relearn,
-   modify, or delete any command.
+   into this integration's private catalog. Older three-part
+   `controller | device | command` records are grouped under an `Imported`
+   area. It does not transmit, relearn, modify, or delete any command.
 4. Test the generated buttons. Once the command count and operation are
    confirmed, remove the old prototype and its dashboard resources if desired.
 

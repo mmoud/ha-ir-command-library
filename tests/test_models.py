@@ -64,6 +64,15 @@ class IRCommandModelTests(unittest.TestCase):
         self.assertEqual(command.controller, "remote.living_room")
         self.assertEqual(command.device, "television")
         self.assertEqual(command.command, "volume_up")
+
+    def test_three_part_legacy_catalog_summary_uses_imported_area(self) -> None:
+        command = IRCommand.from_legacy_summary(
+            "remote.living_room | television | volume_up"
+        )
+        self.assertIsNotNone(command)
+        self.assertEqual(command.area, "Imported")
+        self.assertEqual(command.device, "television")
+        self.assertEqual(command.command, "volume_up")
         self.assertIsNone(IRCommand.from_legacy_summary("not a catalog item"))
 
 
