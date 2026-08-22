@@ -105,33 +105,6 @@ HomeKit Bridge represents Home Assistant buttons as switches. Include the
 `button` domain in the bridge. Leaving that domain without a fixed entity filter
 allows future learned commands to appear automatically.
 
-## Migrating from the original prototype
-
-This integration does not read arbitrary To-do items during normal operation.
-If you used the original `codex_ir_commands` prototype, keep it and its To-do
-list installed during migration:
-
-1. Install this integration, restart Home Assistant, and add **IR Command
-   Library** from **Settings > Devices & services**.
-2. In Developer Tools, run **IR Command Library: Import legacy To-do catalog**
-   and select the original `todo.*` entity (normally the IR Command Library
-   catalog).
-3. The action copies only valid `controller | area | device | command` metadata
-   into this integration's private catalog. Older three-part
-   `controller | device | command` records are grouped under an `Imported`
-   area. It does not transmit, relearn, modify, or delete any command.
-4. Test the generated buttons. Once the command count and operation are
-   confirmed, remove the old prototype and its dashboard resources.
-
-The import is idempotent: it is safe to run again, and existing commands are
-not duplicated. Existing BroadLink commands remain stored by Home Assistant;
-no IR/RF payload needs to be copied or exposed.
-
-If an early migration left duplicate devices in the **Imported** area, run
-**IR Command Library: Clean up legacy orphaned devices**. It removes only the
-old orphaned device records and refuses to remove a record that still has
-entities. It does not send, relearn, or delete IR/RF payloads.
-
 ## Contributing and releases
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change. Before a
