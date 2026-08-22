@@ -9,5 +9,6 @@
   "integration_type": "helper",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/mmoud/ha-ir-command-library/issues",
-  "version": "0.1.0"
+  "single_config_entry": true,
+  "version": "1.0.0"
 }

@@ -20,4 +20,6 @@ CONF_COMMAND_BUTTON: Final = "command_button"
 
 STORAGE_KEY: Final = f"{DOMAIN}.catalog"
 STORAGE_VERSION: Final = 1
-STATIC_URL: Final = f"/api/{DOMAIN}/ir-command-library-card.js"
+VERSION: Final = "1.0.0"
+STATIC_PATH: Final = f"/api/{DOMAIN}/ir-command-library-card.js"
+STATIC_URL: Final = f"{STATIC_PATH}?v={VERSION}"

@@ -19,26 +19,30 @@ Home Assistant's standard `remote.learn_command`, `remote.send_command`, and
   command names, network addresses, and payloads.
 - The integration makes no cloud connection and contains no analytics.
 
-## Restoring from this private backup
+## Installation
 
-HACS cannot install private GitHub repositories. To restore this private backup:
+### HACS
 
-1. Download or clone the repository.
-2. Copy `custom_components/ir_command_library` into Home Assistant's
-   `/config/custom_components/` directory.
-3. Restart Home Assistant.
-4. Go to **Settings > Devices & services > Add integration** and select
+1. In HACS, open **Integrations > Custom repositories**.
+2. Add `https://github.com/mmoud/ha-ir-command-library` with category
+   **Integration**.
+3. Download **IR Command Library** and restart Home Assistant.
+4. Go to **Settings > Devices & services > Add integration** and add
    **IR Command Library**.
 
-If the repository is made public later, it can be added to HACS as a custom
-repository with category **Integration**. The HACS validation job is configured
-to start automatically whenever the repository is public.
+### Manual installation
+
+1. Download the latest release source archive.
+2. Copy `custom_components/ir_command_library` to Home Assistant's
+   `/config/custom_components/` directory.
+3. Restart Home Assistant and add **IR Command Library** from
+   **Settings > Devices & services**.
 
 For the optional dashboard cards, add this JavaScript module under
 **Settings > Dashboards > Resources**:
 
 ```text
-/api/ir_command_library/ir-command-library-card.js?v=0.1.0
+/api/ir_command_library/ir-command-library-card.js?v=1.0.0
 ```
 
 ## Dashboard cards
@@ -94,21 +98,32 @@ allows future learned commands to appear automatically.
 
 ## Migration from the prototype To-do catalog
 
-The private release intentionally does not read arbitrary To-do items. Existing
+This integration intentionally does not read arbitrary To-do items. Existing
 BroadLink commands remain stored by Home Assistant. Use **Register existing
 command** once for each old catalog item; no IR/RF payload needs to be copied or
 exposed.
 
-## Development checks
+## Public-release and privacy checklist
+
+This repository is designed to be public. Before a release, run the checks below
+from a clean checkout. The privacy check scans the working tree and every
+reachable Git blob for common Home Assistant secrets and personal-network
+artifacts.
 
 ```bash
-python3 -m compileall -q custom_components
-node --check custom_components/ir_command_library/frontend/ir-command-library-card.js
 python3 scripts/privacy_check.py
+python3 -m compileall -q custom_components
 python3 -m unittest discover -s tests -v
+node --check custom_components/ir_command_library/frontend/ir-command-library-card.js
 ```
+
+Also verify the GitHub repository has a public description, issues enabled,
+private vulnerability reporting enabled, and a release created from the version
+in `manifest.json`. Do not upload Home Assistant backups, `.storage` folders,
+learned-code files, diagnostics archives, screenshots of private dashboards, or
+any learned IR/RF payloads.
 
 ## Support status
 
-This is an early private backup release. Test command learning and deletion on
-a non-critical appliance before relying on it broadly.
+Test command learning and deletion on a non-critical appliance before relying
+on it broadly.

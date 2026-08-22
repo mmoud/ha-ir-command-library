@@ -29,6 +29,7 @@ from .const import (
     SERVICE_LEARN_COMMAND,
     SERVICE_REGISTER_COMMAND,
     SERVICE_REMOVE_COMMAND,
+    STATIC_PATH,
     STATIC_URL,
 )
 from .coordinator import IRCommandCoordinator
@@ -76,7 +77,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Register static assets and GUI-editable service actions."""
     frontend = Path(__file__).parent / "frontend" / "ir-command-library-card.js"
     await hass.http.async_register_static_paths(
-        [StaticPathConfig(STATIC_URL, str(frontend), cache_headers=True)]
+        [StaticPathConfig(STATIC_PATH, str(frontend), cache_headers=True)]
     )
 
     async def handle_learn(call: ServiceCall) -> None:
