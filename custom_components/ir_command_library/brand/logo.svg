@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 256" role="img" aria-label="IR Command Library">
+  <defs>
+    <linearGradient id="background" x1="40" y1="32" x2="600" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17263d"/>
+      <stop offset="1" stop-color="#070b14"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="76" y1="56" x2="212" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#78eaff"/>
+      <stop offset="1" stop-color="#5f79ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="616" height="232" rx="52" fill="url(#background)"/>
+  <rect x="13" y="13" width="614" height="230" rx="51" fill="none" stroke="#8eeeff" stroke-opacity=".22" stroke-width="2"/>
+  <rect x="54" y="57" width="140" height="142" rx="32" fill="#0c1423" stroke="url(#accent)" stroke-width="7"/>
+  <circle cx="124" cy="132" r="39" fill="#12243a" stroke="url(#accent)" stroke-width="7"/>
+  <circle cx="124" cy="132" r="11" fill="#78eaff"/>
+  <path d="M89 39c20-17 50-17 70 0M72 19c30-25 74-25 104 0" fill="none" stroke="#78eaff" stroke-linecap="round" stroke-width="8"/>
+  <circle cx="82" cy="173" r="8" fill="#78eaff"/>
+  <circle cx="104" cy="173" r="8" fill="#657fff"/>
+  <path d="M140 173h28" stroke="#78eaff" stroke-linecap="round" stroke-width="8"/>
+  <text x="238" y="116" fill="#f3f8ff" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700" letter-spacing="1">IR COMMAND</text>
+  <text x="238" y="158" fill="#9cdef0" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700" letter-spacing="1">LIBRARY</text>
+</svg>
