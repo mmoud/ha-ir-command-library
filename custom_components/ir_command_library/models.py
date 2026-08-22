@@ -16,6 +16,10 @@ LEGACY_THREE_PART_CATALOG_PATTERN = re.compile(
     r"^(?P<controller>.+?)\s*\|\s*(?P<device>[^|]+?)\s*\|\s*"
     r"(?P<command>.+)$"
 )
+LEGACY_CONTROLLER_LABEL_PATTERN = re.compile(
+    r"^(?P<controller>remote\.[a-z0-9_]+)\s+\[(?P<area>[^\]]+)]$",
+    re.IGNORECASE,
+)
 LEGACY_DEFAULT_AREA = "Imported"
 
 
@@ -76,6 +80,10 @@ class IRCommand:
             if match is None:
                 return None
             values = {**match.groupdict(), "area": LEGACY_DEFAULT_AREA}
+        if label := parse_legacy_controller_label(values["controller"]):
+            values["controller"] = label[0]
+            if values["area"] == LEGACY_DEFAULT_AREA:
+                values["area"] = label[1]
         try:
             return cls.create(**values)
         except (TypeError, ValueError):
@@ -105,6 +113,16 @@ class IRCommand:
 def pretty_name(value: str) -> str:
     """Turn storage-safe names into voice-friendly names."""
     return " ".join(part.capitalize() for part in re.split(r"[_.-]+", value) if part)
+
+
+def parse_legacy_controller_label(value: object) -> tuple[str, str] | None:
+    """Split the prototype's ``remote.entity [Area]`` display label."""
+    match = LEGACY_CONTROLLER_LABEL_PATTERN.match(str(value or "").strip())
+    if match is None:
+        return None
+    controller = match["controller"].lower()
+    area = match["area"].strip()
+    return (controller, area) if area else None
 
 
 def _bounded(value: Any, maximum: int) -> str:

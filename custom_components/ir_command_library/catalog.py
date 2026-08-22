@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
 from .const import STORAGE_KEY, STORAGE_VERSION
-from .models import IRCommand
+from .models import IRCommand, parse_legacy_controller_label
 
 
 class IRCommandCatalog:
@@ -51,16 +51,16 @@ class IRCommandCatalog:
             await self._async_save()
             return True
 
-    async def async_replace_controller(self, old: str, new: str) -> int:
-        """Replace a controller reference without touching learned payloads."""
+    async def async_repair_legacy_controller_labels(self) -> int:
+        """Repair the prototype's display labels without touching payloads."""
         async with self._lock:
             repaired = 0
             commands: dict[str, IRCommand] = {}
             for command in self._commands.values():
-                if command.controller == old:
+                if label := parse_legacy_controller_label(command.controller):
                     command = IRCommand.create(
-                        controller=new,
-                        area=command.area,
+                        controller=label[0],
+                        area=label[1],
                         device=command.device,
                         command=command.command,
                     )

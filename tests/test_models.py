@@ -75,6 +75,14 @@ class IRCommandModelTests(unittest.TestCase):
         self.assertEqual(command.command, "volume_up")
         self.assertIsNone(IRCommand.from_legacy_summary("not a catalog item"))
 
+    def test_legacy_controller_label_restores_its_area(self) -> None:
+        command = IRCommand.from_legacy_summary(
+            "remote.universal_remote [Family Room] | television | power"
+        )
+        self.assertIsNotNone(command)
+        self.assertEqual(command.controller, "remote.universal_remote")
+        self.assertEqual(command.area, "Family Room")
+
 
 if __name__ == "__main__":
     unittest.main()

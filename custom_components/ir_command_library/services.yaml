@@ -73,14 +73,8 @@ import_legacy_catalog:
         entity:
           domain: todo
 
-repair_controller:
-  fields:
-    from_controller:
-      required: true
-      selector:
-        text:
-    to_controller:
-      required: true
-      selector:
-        entity:
-          domain: remote
+repair_legacy_controller_labels:
+  description: >-
+    Repair controller labels imported from the original prototype. This restores
+    the remote entity ID and the room name without reading or changing learned
+    IR/RF payloads.
